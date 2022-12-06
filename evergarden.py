@@ -1,6 +1,7 @@
 import logging
 import os
 import pandas as pd
+import re
 
 logging.basicConfig(level=logging.INFO)
 logging.info('App Start')
@@ -39,14 +40,28 @@ logging.info(df)
 for index, row in df.iterrows():
     outputJ = templateJ
     for indexName in row.index:
-        outputJ = outputJ.replace(indexName,row[indexName])
+        if indexName.startswith("p."):
+            lines = row[indexName].split("\n")
+            result = ""
+            for line in lines:
+                result = result + "<p>" + line + "</p>\r\n"
+            outputJ = outputJ.replace(indexName,result)
+        else:
+            outputJ = outputJ.replace(indexName,row[indexName])
 
 df = pd.read_excel(os.path.join(path,contentsFile), sheet_name='ContentsE')
 logging.info(df)
 for index, row in df.iterrows():
     outputE = templateE
     for indexName in row.index:
-        outputE = outputE.replace(indexName,row[indexName])
+        if indexName.startswith("p."):
+            lines = row[indexName].split("\n")
+            result = ""
+            for line in lines:
+                result = result + "<p>" + line + "</p>\r\n"
+            outputE  = outputE.replace(indexName,result)
+        else:
+            outputE = outputE.replace(indexName,row[indexName])
 
 outputdir ="output"
 if not os.path.isdir(outputdir):
